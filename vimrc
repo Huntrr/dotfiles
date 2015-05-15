@@ -1,14 +1,28 @@
 " Hunter Lightman's vimrc
 
-" Use Vim settings, rather than Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" Vundle plugin calls
+Plugin 'Lokaltog/vim-distinguished'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+
+filetype plugin indent on    " required
 let mapleader=" "
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-" basic config
+" Basic config
 if has("vms")
   set nobackup		" do not keep a backup file, use versions instead
 else
@@ -23,6 +37,9 @@ set tabstop=2
 set shiftwidth=2
 set expandtab
 set showbreak=▸
+
+" Appearance
+colorscheme distinguished
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
