@@ -12,6 +12,11 @@ Plugin 'gmarik/Vundle.vim'
 
 " Vundle plugin calls
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'wavded/vim-stylus'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -22,12 +27,14 @@ let mapleader=" "
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
+
+
+
+" ------------
 " Basic config
-if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
-else
-  set backup		" keep a backup file
-endif
+" ------------
+set nobackup
+set nowritebackup
 set history=50		" keep 50 lines of command line history
 set ruler		" show the cursor position all the time
 set showcmd		" display incomplete commands
@@ -38,7 +45,12 @@ set shiftwidth=2
 set expandtab
 set showbreak=▸
 
+
+
+
+" ----------
 " Appearance
+" ----------
 if (!has("gui_running"))
   let g:solarized_termtrans=1
   let g:solarized_termcolors=256
@@ -64,6 +76,13 @@ set foldnestmax=10
 nnoremap Z za
 set foldmethod=indent
 
+
+
+
+" --------
+" MAPPINGS
+" --------
+
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
@@ -77,9 +96,30 @@ noremap <Right> <Nop>
 " Switch off search highlight until next search (clear the highlight)
 nnoremap <silent> <Leader>/ :nohlsearch<CR>
 
+" NERDTree
+map <Leader>f :NERDTreeToggle<CR>
+
+" Window switching
+nnoremap <Leader>w <C-W><C-W>
+
+
+
+
+" --------
+" AUTOCMDS
+" --------
+
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
   
+  " Configure stylus styling
+  autocmd BufNewFile,BufReadPost *.styl set filetype=stylus
+
+  " Configure NERDTree
+  autocmd StdinReadPre * let s:std_in=1 " Open NERDTree if vim started w/ no target file
+  autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " Close vim if only NERDTree is left
+
   " Enable file type detection.
   " Use the default filetype settings, so that mail gets 'tw' set to 72,
   " 'cindent' is on in C files, etc.
