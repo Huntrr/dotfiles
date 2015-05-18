@@ -11,7 +11,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 " Vundle plugin calls
-Plugin 'Lokaltog/vim-distinguished'
+Plugin 'altercation/vim-colors-solarized'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -39,7 +39,20 @@ set expandtab
 set showbreak=▸
 
 " Appearance
-colorscheme distinguished
+if (!has("gui_running"))
+  let g:solarized_termtrans=1
+  let g:solarized_termcolors=256
+  hi Visual term=reverse cterm=reverse ctermfg=10 ctermbg=7
+endif
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+  syntax enable
+  set hlsearch
+  set background=dark
+  colorscheme solarized
+endif
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
@@ -63,13 +76,6 @@ noremap <Right> <Nop>
 
 " Switch off search highlight until next search (clear the highlight)
 nnoremap <silent> <Leader>/ :nohlsearch<CR>
-
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
-  syntax on
-  set hlsearch
-endif
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
