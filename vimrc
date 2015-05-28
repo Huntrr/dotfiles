@@ -36,6 +36,7 @@ filetype off                  " required
   Plugin 'garbas/vim-snipmate'
   Plugin 'honza/vim-snippets'
   Plugin 'tpope/vim-surround' " Adds s selector (i.e. cs'[ will change surrounding ' to [)
+  Plugin 'scrooloose/syntastic'
   Plugin 'scrooloose/nerdcommenter' " Adds <LEADER>c ... commands to change comment state
  
   " All of your Plugins must be added before the following line
@@ -73,6 +74,16 @@ set backspace=indent,eol,start
   " airline
   let g:airline_powerline_fonts = 1
   let g:airline#extensions#tabline#enabled = 1
+
+  " Syntastic
+  set statusline+=%#warningmsg#
+  set statusline+=%{SyntasticStatuslineFlag()}
+  set statusline+=%*
+
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 1
+  let g:syntastic_check_on_open = 1
+  let g:syntastic_check_on_wq = 0
 
 " ----------
 " Appearance
@@ -138,13 +149,13 @@ set backspace=indent,eol,start
 
   " Buffers
   " Open new buffer
-  nmap <leader>T :enew<cr>
+  nmap <leader>j :enew<cr>
   " Move to the next buffer
   nmap <leader>l :bnext<CR>
   " Move to the previous buffer
   nmap <leader>h :bprevious<CR>
   " Close the current buffer and move to the previous one
-  nmap <leader>q :bp <BAR> bd #<CR>
+  nmap <leader>k :bp <BAR> bd #<CR>
 
   " System buffer paste
   vmap <Leader>y "+y

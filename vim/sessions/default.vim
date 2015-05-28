@@ -1,6 +1,6 @@
 " ~/dotfiles/vim/sessions/default.vim:
 " Vim session script.
-" Created by session.vim 2.10.1 on 18 May 2015 at 20:24:12.
+" Created by session.vim 2.10.1 on 22 May 2015 at 17:44:15.
 " Open this file in Vim and run :source % to restore your session.
 
 set guioptions=egmrL
@@ -19,21 +19,45 @@ if &cp | set nocp | endif
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
-cd ~/dotfiles
+cd ~/Projects/DBR/src
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +0 vimrc
+badd +7 css/main.styl
+badd +13 index.jade
+badd +10 js/main.coffee
+badd +3 js/game.coffee
+badd +12 js/screen.coffee
+badd +7 js/level.coffee
+badd +15 js/screens/menu.coffee
+badd +77 js/lib/jquery-ui.js
 argglobal
 silent! argdel *
-argadd vimrc
-edit vimrc
+edit js/lib/jquery-ui.js
 set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
+exe 'vert 1resize ' . ((&columns * 31 + 102) / 204)
+exe 'vert 2resize ' . ((&columns * 172 + 102) / 204)
+argglobal
+enew
+" file NERD_tree_1
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=10
+setlocal fml=1
+setlocal fdn=10
+setlocal nofen
+wincmd w
 argglobal
 setlocal fdm=indent
 setlocal fde=0
@@ -43,12 +67,26 @@ setlocal fdl=10
 setlocal fml=1
 setlocal fdn=10
 setlocal fen
-let s:l = 40 - ((39 * winheight(0) + 28) / 56)
+58
+silent! normal! zo
+59
+silent! normal! zo
+60
+silent! normal! zo
+74
+silent! normal! zo
+77
+silent! normal! zo
+let s:l = 68 - ((44 * winheight(0) + 27) / 55)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-40
-normal! 0
+68
+normal! 06|
+wincmd w
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 31 + 102) / 204)
+exe 'vert 2resize ' . ((&columns * 172 + 102) / 204)
 tabnext 1
 if exists('s:wipebuf')
 "   silent exe 'bwipe ' . s:wipebuf
@@ -66,6 +104,19 @@ let &so = s:so_save | let &siso = s:siso_save
 " by :mksession out of the box).
 
 1wincmd w
+tabnext 1
+let s:bufnr_save = bufnr("%")
+let s:cwd_save = getcwd()
+NERDTree ~/Projects/DBR/src
+if !getbufvar(s:bufnr_save, '&modified')
+  let s:wipebuflines = getbufline(s:bufnr_save, 1, '$')
+  if len(s:wipebuflines) <= 1 && empty(get(s:wipebuflines, 0, ''))
+    silent execute 'bwipeout' s:bufnr_save
+  endif
+endif
+execute "cd" fnameescape(s:cwd_save)
+1resize 55|vert 1resize 31|2resize 55|vert 2resize 172|
+2wincmd w
 tabnext 1
 if exists('s:wipebuf')
   if empty(bufname(s:wipebuf))
