@@ -130,8 +130,8 @@ set backspace=indent,eol,start
   nnoremap <silent> <Leader>/ :nohlsearch<CR>
 
   " Splits
-  nnoremap <Leader>% :sp<CR>
-  nnoremap <Leader>" :vsp<CR>
+  nnoremap <Leader>" :sp<CR>
+  nnoremap <Leader>% :vsp<CR>
 
   " NERDTree
   map <Leader>f :NERDTreeToggle<CR>
