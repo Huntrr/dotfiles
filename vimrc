@@ -129,6 +129,10 @@ set backspace=indent,eol,start
   " Switch off search highlight until next search (clear the highlight)
   nnoremap <silent> <Leader>/ :nohlsearch<CR>
 
+  " Splits
+  nnoremap <Leader>% :sp
+  nnoremap <Leader>" :vsp
+
   " NERDTree
   map <Leader>f :NERDTreeToggle<CR>
 
