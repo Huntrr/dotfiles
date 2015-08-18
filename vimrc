@@ -50,7 +50,6 @@ let mapleader=" "
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-
 " ------------
 " Basic config
 " ------------
@@ -176,6 +175,9 @@ set backspace=indent,eol,start
   " Snip mate
   imap <C-J> <esc>a<Plug>snipMateNextOrTrigger
   smap <C-J> <Plug>snipMateNextOrTrigger
+
+  " Close tag by typing <//
+  iabbrev <// </<C-X><C-O>
 
 " --------
 " AUTOCMDS
