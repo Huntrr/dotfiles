@@ -38,7 +38,15 @@ filetype off                  " required
   Plugin 'tpope/vim-surround' " Adds s selector (i.e. cs'[ will change surrounding ' to [)
   Plugin 'scrooloose/syntastic'
   Plugin 'scrooloose/nerdcommenter' " Adds <LEADER>c ... commands to change comment state
- 
+  Plugin 'xuhdev/vim-latex-live-preview' " adds :LLPStartPreview
+  Plugin 'lervag/vimtex' " Adds ie/ae environment, i$/a$, id/ad delim... And dsc/dse (surrounding command/environment) and csc/cse)
+  Plugin 'reedes/vim-pencil'
+  Plugin 'reedes/vim-lexical'
+  Plugin 'reedes/vim-litecorrect'
+  Plugin 'reedes/vim-textobj-quote'
+  Plugin 'reedes/vim-textobj-sentence'
+  Plugin 'kana/vim-textobj-user'
+  Plugin 'vim-scripts/omlet.vim'
   " All of your Plugins must be added before the following line
   call vundle#end()            " required
 
@@ -83,6 +91,15 @@ set backspace=indent,eol,start
   let g:syntastic_auto_loc_list = 1
   let g:syntastic_check_on_open = 1
   let g:syntastic_check_on_wq = 0
+
+  let g:syntastic_mode_map = { 'passive_filetypes': ['html'] }
+
+  " Line length
+  if exists('+colorcolumn')
+    set colorcolumn=80
+  else
+    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+  endif
 
 " ----------
 " Appearance
@@ -183,6 +200,15 @@ set backspace=indent,eol,start
   " Close tag by typing <//
   iabbrev <// </<C-X><C-O>
 
+  " Pencil
+  let g:pencil#textwidth = 80
+
+  " Tex live preview
+  let g:livepreview_previewer = 'open -a Preview'
+  " LaTeX preview
+  nnoremap <Leader>T :LLPStartPreview<CR>
+  nnoremap <Leader>L :LLPStartPreview<CR>
+
 " --------
 " AUTOCMDS
 " --------
@@ -235,6 +261,29 @@ set backspace=indent,eol,start
     command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
         \ | wincmd p | diffthis
   endif
+
+  " Configure pencil
+  augroup pencil
+    autocmd!
+    autocmd FileType markdown,mkd call pencil#init()
+                              \ | call lexical#init()
+                              \ | call litecorrect#init()
+                              \ | call textobj#quote#init()
+                              \ | call textobj#sentence#init()
+
+    autocmd FileType text,txt     call pencil#init({'wrap': 'soft'})        
+                              \ | call lexical#init()
+                              \ | call litecorrect#init()
+                              \ | call textobj#quote#init()
+                              \ | call textobj#sentence#init()
+                              \ | Pencil
+
+    autocmd FileType textile      call pencil#init({'wrap': 'soft'})
+                              \ | call lexical#init()
+                              \ | call litecorrect#init()
+                              \ | call textobj#quote#init()
+                              \ | call textobj#sentence#init()
+  augroup END
 
 " Auto-reloads vimrc
 augroup reload_vimrc
