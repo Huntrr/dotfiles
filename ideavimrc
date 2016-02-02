@@ -51,7 +51,6 @@ filetype off                  " required
   Plugin 'deris/vim-shot-f'
   Plugin 'junegunn/goyo.vim'
   Plugin 'mitsuhiko/vim-jinja'
-  Plugin 'tpope/vim-repeat'
   " All of your Plugins must be added before the following line
   call vundle#end()            " required
 
@@ -83,11 +82,8 @@ set backspace=indent,eol,start
   set showmatch " show matching paren
   set wildmenu
 
-  " python/html tab stops
+  " python tab stops
   au FileType python setl sw=4 ts=4
-  au FileType html setl sw=4 ts=4
-  au FileType jade setl sw=4 ts=4
-  au FileType md setl sw=4 ts=4
 
   " airline
   let g:airline_powerline_fonts = 1
@@ -304,17 +300,20 @@ set backspace=indent,eol,start
     autocmd FileType markdown,mkd call pencil#init()
                               \ | call lexical#init()
                               \ | call litecorrect#init()
+                              \ | call textobj#quote#init()
                               \ | call textobj#sentence#init()
 
     autocmd FileType text,txt     call pencil#init({'wrap': 'soft'})        
                               \ | call lexical#init()
                               \ | call litecorrect#init()
+                              \ | call textobj#quote#init()
                               \ | call textobj#sentence#init()
                               \ | :Pencil
 
     autocmd FileType textile      call pencil#init({'wrap': 'soft'})
                               \ | call lexical#init()
                               \ | call litecorrect#init()
+                              \ | call textobj#quote#init()
                               \ | call textobj#sentence#init()
   augroup END
 

@@ -49,7 +49,7 @@ plugins=(git osx brew npm web-search)
 
 # User configuration
 
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/texbin"
+export PATH="$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -82,3 +82,8 @@ export EDITOR='vim'
 
 export NVM_DIR="/Users/hunter/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# OPAM configuration
+. /Users/hunter/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
