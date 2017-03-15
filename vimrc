@@ -214,8 +214,6 @@ set backspace=indent,eol,start
   " Close tag by typing <//
   iabbrev <// </<C-X><C-O>
 
-  " Pencil
-  let g:pencil#textwidth = 80
 
   " Tex live preview
   let g:livepreview_previewer = 'open -a Preview'
@@ -226,25 +224,36 @@ set backspace=indent,eol,start
   " Ocaml
   " Use merlin
   function SetupMerlin()
-    let opamprefix = system("opam config var prefix | tr -d '\n'")
-    execute "set runtimepath+=" . opamprefix . "/share/merlin/vim"
-    execute "set runtimepath+=" . opamprefix . "/share/merlin/vimbufsync"
+    let s:ocamlmerlin = substitute(system('opam config var share'), '\n$', '', '''') . "/merlin"
+    execute "set rtp+=".s:ocamlmerlin."/vim"
+    execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
+
+    let g:syntastic_ocaml_checkers = ['merlin']
     set omnifunc=syntaxcomplete#Complete
+
     nnoremap <leader>d :MerlinLocate<CR>
     nnoremap <leader>i :MerlinTypeOf<CR>
     nnoremap <leader>I :MerlinGrowEnclosing<CR>
+    nnoremap <leader>u :MerlinShrinkEnclosing<CR>
     nnoremap <leader>? :MerlinClearEnclosing<CR>
-
-    execute ":source ".opamprefix."/share/ocp-indent/vim/indent/ocaml.vim"
   endfunction
 
   call SetupMerlin()
+
+  " cpp
+  map <C-K> :pyf <path-to-this-file>/clang-format.py<cr>
+  imap <C-K> <c-o>:pyf <path-to-this-file>/clang-format.py<cr>
+  set cinkeys-=0#
+  set cinoptions+=(0,W1s
+  set indentkeys-=0#
+  
 
 " --------
 " AUTOCMDS
 " --------
   " Only do this part when compiled with support for autocommands.
   if has("autocmd")
+    autocmd FileType ocaml execute "source /Users/hunter/.opam/4.04.0/share/ocp-indent/vim/indent/ocaml.vim"
 
     " Configure stylus styling
     autocmd BufNewFile,BufReadPost *.styl set filetype=stylus
@@ -293,16 +302,10 @@ set backspace=indent,eol,start
         \ | wincmd p | diffthis
   endif
 
-  augroup ocaml
-    autocmd!
-    autocmd FileType ml,mli,mll,mly :call SetupMerlin()<CR>
-  augroup END
-
   " Configure pencil
   augroup pencil
     autocmd!
-    autocmd FileType markdown,mkd call pencil#init()
-                              \ | call lexical#init()
+    autocmd FileType markdown,mkd call lexical#init()
                               \ | call litecorrect#init()
                               \ | call textobj#sentence#init()
 
@@ -310,10 +313,9 @@ set backspace=indent,eol,start
                               \ | call lexical#init()
                               \ | call litecorrect#init()
                               \ | call textobj#sentence#init()
-                              \ | :Pencil
+                              \ | :PencilOff
 
-    autocmd FileType textile      call pencil#init({'wrap': 'soft'})
-                              \ | call lexical#init()
+    autocmd FileType textile      call lexical#init()
                               \ | call litecorrect#init()
                               \ | call textobj#sentence#init()
   augroup END
