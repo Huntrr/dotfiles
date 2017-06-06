@@ -27,3 +27,5 @@ cd ~/.vim/bundle/YouCompleteMe
 
 If that doesn't work, check out [YouCompleteMe's
 page](https://github.com/Valloric/YouCompleteMe)
+
+You might need to change the first line of `zshrc` to match your oh-my-zsh dir.

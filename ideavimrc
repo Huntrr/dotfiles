@@ -6,57 +6,6 @@ filetype off                  " required
 " -------
 " PLUGINS
 " -------
-  " set the runtime path to include Vundle and initialize
-  set rtp+=~/.vim/bundle/Vundle.vim
-  call vundle#begin()
-
-  " let Vundle manage Vundle, required
-  Plugin 'gmarik/Vundle.vim'
-
-  " Vundle plugin calls
-  Plugin 'xolox/vim-misc'
-  Plugin 'marijnh/tern_for_vim'
-  Plugin 'altercation/vim-colors-solarized'
-  Plugin 'kchmck/vim-coffee-script'
-  Plugin 'digitaltoad/vim-jade'
-  Plugin 'wavded/vim-stylus'
-  Plugin 'scrooloose/nerdtree'
-  Plugin 'Xuyuanp/nerdtree-git-plugin'
-  Plugin 'bling/vim-airline'
-  Plugin 'wincent/command-t'
-  Plugin 'vim-scripts/argtextobj.vim' " Adds the ia and aa text objects (for arguments)
-  Plugin 'michaeljsmith/vim-indent-object' " Adds the ii and ai text objects (for indent levels)
-  "Plugin 'sjl/gundo.vim' " Graphical undo
-  Plugin 'christoomey/vim-tmux-navigator'
-  Plugin 'xolox/vim-session'
-  Plugin 'moll/vim-node'
-  Plugin 'Valloric/YouCompleteMe'
-  Plugin 'MarcWeber/vim-addon-mw-utils'
-  Plugin 'tomtom/tlib_vim'
-  Plugin 'garbas/vim-snipmate'
-  Plugin 'honza/vim-snippets'
-  Plugin 'tpope/vim-surround' " Adds s selector (i.e. cs'[ will change surrounding ' to [)
-  Plugin 'scrooloose/syntastic'
-  Plugin 'scrooloose/nerdcommenter' " Adds <LEADER>c ... commands to change comment state
-  Plugin 'xuhdev/vim-latex-live-preview' " adds :LLPStartPreview
-  Plugin 'lervag/vimtex' " Adds ie/ae environment, i$/a$, id/ad delim... And dsc/dse (surrounding command/environment) and csc/cse)
-  Plugin 'reedes/vim-pencil'
-  Plugin 'reedes/vim-lexical'
-  Plugin 'reedes/vim-litecorrect'
-  Plugin 'reedes/vim-textobj-quote'
-  Plugin 'reedes/vim-textobj-sentence'
-  Plugin 'kana/vim-textobj-user'
-  Plugin 'klen/python-mode'
-  Plugin 'sheerun/vim-polyglot'
-  Plugin 'deris/vim-shot-f'
-  Plugin 'junegunn/goyo.vim'
-  Plugin 'mitsuhiko/vim-jinja'
-  " All of your Plugins must be added before the following line
-  call vundle#end()            " required
-
-  filetype plugin indent on    " required
-
-
 let mapleader=" "
 
 " allow backspacing over everything in insert mode

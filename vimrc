@@ -17,18 +17,14 @@ filetype off                  " required
   Plugin 'xolox/vim-misc'
   Plugin 'marijnh/tern_for_vim'
   Plugin 'altercation/vim-colors-solarized'
-  Plugin 'kchmck/vim-coffee-script'
   Plugin 'digitaltoad/vim-jade'
-  Plugin 'wavded/vim-stylus'
   Plugin 'scrooloose/nerdtree'
   Plugin 'Xuyuanp/nerdtree-git-plugin'
   Plugin 'bling/vim-airline'
   Plugin 'wincent/command-t'
   Plugin 'vim-scripts/argtextobj.vim' " Adds the ia and aa text objects (for arguments)
   Plugin 'michaeljsmith/vim-indent-object' " Adds the ii and ai text objects (for indent levels)
-  "Plugin 'sjl/gundo.vim' " Graphical undo
   Plugin 'christoomey/vim-tmux-navigator'
-  Plugin 'xolox/vim-session'
   Plugin 'moll/vim-node'
   Plugin 'Valloric/YouCompleteMe'
   Plugin 'MarcWeber/vim-addon-mw-utils'
@@ -52,6 +48,7 @@ filetype off                  " required
   Plugin 'junegunn/goyo.vim'
   Plugin 'mitsuhiko/vim-jinja'
   Plugin 'tpope/vim-repeat'
+
   " All of your Plugins must be added before the following line
   call vundle#end()            " required
 
@@ -174,13 +171,6 @@ set backspace=indent,eol,start
   nnoremap <c-h> <c-w>h
   nnoremap <c-l> <c-w>l
 
-  " Gundo
-  nnoremap <Leader>u :GundoToggle<CR>
-
-  " save session
-  nnoremap <leader>s :SaveSession<CR>
-  nnoremap <leader>o :OpenSession<CR>
-
   " Buffers
   " Open new buffer
   nmap <leader>j :enew<cr>
@@ -213,6 +203,9 @@ set backspace=indent,eol,start
 
   " Close tag by typing <//
   iabbrev <// </<C-X><C-O>
+
+  " escape with jk
+  imap jk <Esc>  
 
 
   " Tex live preview
