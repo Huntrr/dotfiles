@@ -205,7 +205,7 @@ set backspace=indent,eol,start
   iabbrev <// </<C-X><C-O>
 
   " escape with jk
-  imap jk <Esc>  
+  inoremap jk <Esc>  
 
 
   " Tex live preview
