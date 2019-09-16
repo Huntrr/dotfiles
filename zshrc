@@ -11,7 +11,7 @@ COMPLETION_WAITING_DOTS="true"
 # much, much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-plugins=(git osx brew vi-mode web-search zsh-autosuggestions autojump)
+plugins=(git osx brew vi-mode web-search zsh-autosuggestions autojump history-substring-search)
 
 # User configuration
 export PATH="$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -21,6 +21,9 @@ export EDITOR='vim'
 export NVM_DIR="${HOME}/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
 
 # ALIASES
 alias balias='vim ~/.zshrc && source ~/.zshrc'
