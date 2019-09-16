@@ -1,52 +1,127 @@
 #!/bin/bash
-############################
-# .make.sh
-# This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles
-############################
+###############################################
+# This script:                                #
+# 1) creates symlinks from the home directory #
+#    to any desired dotfiles in ~/dotfiles    #
+# 2) installs zsh                             #
+###############################################
 
-########## Variables
+# Variables
+dir="$(dirname $0)"
+olddir=~/dotfiles_old
+platform=$(uname);
 
-dir=~/dotfiles                    # dotfiles directory
-olddir=~/dotfiles_old             # old dotfiles backup directory
-files="vrapperrc ideavimrc vimrc vim zshrc oh-my-zsh tmux.conf zsh-autosuggestions"    # list of files/folders to symlink in homedir
-
-##########
-
-# create dotfiles_old in homedir
-echo -n "Creating $olddir for backup of any existing dotfiles in ~ ..."
-mkdir -p $olddir
-echo "done"
-
-# change to the dotfiles directory
-echo -n "Changing to the $dir directory ..."
-cd $dir
-echo "done"
-
-# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks from the homedir to any files in the ~/dotfiles directory specified in $files
-for file in $files; do
-    echo "Moving any existing dotfiles from ~ to $olddir"
-    mv ~/.$file ~/dotfiles_old/
-    echo "Creating symlink to $file in home directory."
-    ln -s $dir/$file ~/.$file
-done
-
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-
-install_zsh () {
-# Test to see if zshell is installed.  If it is:
-if [ ! -f /bin/zsh -o -f /usr/bin/zsh ]; then
-    # If zsh isn't installed, get the platform of the current machine
-    platform=$(uname);
-    # If the platform is Linux, try an apt-get to install zsh and then recurse
-    if [[ $platform == 'Linux' ]]; then
-        sudo apt-get install zsh
-        install_zsh
-    # If the platform is OS X, tell the user to install zsh :)
-    elif [[ $platform == 'Darwin' ]]; then
-        echo "Please install zsh, then re-run this script!"
-        exit
+# Script
+brew_url=https://raw.githubusercontent.com/Homebrew/install/master/install
+install_packagemanager () {
+  echo "Updating package manager"
+  if [[ $platform == 'Linux' ]]; then
+    sudo apt-get update
+  elif [[ $platform == 'Darwin' ]]; then
+    which -s brew
+    if [[ $? != 0 ]]; then
+        echo "Homebrew installation"
+        /usr/bin/ruby -e "$(curl -fsSL $brew_url)"
+    else
+        brew update
     fi
-fi
+  fi
 }
 
+install_node () {
+  echo "Node installation"
+  if [[ $platform == 'Linux' ]]; then
+    sudo apt-get install nodejs
+  elif [[ $platform == 'Darwin' ]]; then
+    brew install node
+  fi
+}
+
+install_zsh () {
+  echo "Zshell installation"
+  if [ ! -f /bin/zsh -o -f /usr/bin/zsh ]; then
+    if [[ $platform == 'Linux' ]]; then
+      sudo apt-get install git curl
+      sudo apt-get install zsh autojump
+    elif [[ $platform == 'Darwin' ]]; then
+      brew install zsh autojump
+    fi
+  else
+    echo "... skipping"
+  fi
+}
+
+zsh_url=https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+install_oh_my_zsh () {
+  echo "Oh My Zsh installation"
+  sh -c "$(curl -fsSL $zsh_url)"
+}
+
+install_neovim () {
+  echo "Neovim installation"
+  if [[ $platform == 'Linux' ]]; then
+    sudo apt-get install neovim python-neovim python3-neovim
+  elif [[ $platform == 'Darwin' ]]; then
+    brew install neovim
+  fi
+  python3 -m pip install --user --upgrade pynvim
+}
+
+install_vimplug () {
+  echo "Vim-Plug installation"
+  if [[ -e ~/.vim/autoload/plug.vim ]]; then
+    echo "... skipping for vim"
+  else
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  fi
+
+  if [[ -e ~/.local/share/nvim/site/autoload/plug.vim ]]; then
+    echo "... skipping for neovim"
+  else
+    curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  fi
+}
+
+install_tmux () {
+  echo "TMux installation"
+  if [[ $platform == 'Linux' ]]; then
+    sudo apt-get install tmux
+  elif [[ $platform == 'Darwin' ]]; then
+    brew install tmux
+  fi
+}
+
+symlink_dotfiles () {
+  echo "Backups and symlinks"
+  mkdir -p $olddir
+  for file in ./*; do
+    file=$(basename $file)
+    echo $file
+    [ -e "$file" ] || continue
+    [ "$file" != "install.sh" ] || continue
+    [ "$file" != "readme.md" ] || continue
+    if [ -e "${HOME}/.$file" ]; then
+      echo "... backing up ~/.$file"
+      mv ~/.$file ~/dotfiles_old/
+    fi
+    echo "...... creating symlink to $file in home directory."
+    ln -fs $(pwd)/$file ~/.$file
+  done
+}
+
+# change to the dotfiles directory
+echo "Changing to the $dir directory ..."
+cd $dir
+
+install_packagemanager
+install_node
 install_zsh
+install_oh_my_zsh
+install_neovim
+install_vimplug
+install_tmux
+symlink_dotfiles
+echo "Done!"
+

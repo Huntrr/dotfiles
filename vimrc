@@ -1,67 +1,91 @@
 " Hunter Lightman's vimrc
-
-set nocompatible              " be iMproved, required
-filetype off                  " required
-
-" -------
-" PLUGINS
-" -------
-  " set the runtime path to include Vundle and initialize
-  set rtp+=~/.vim/bundle/Vundle.vim
-  call vundle#begin()
-
-  " let Vundle manage Vundle, required
-  Plugin 'gmarik/Vundle.vim'
-
-  " Vundle plugin calls
-  Plugin 'xolox/vim-misc'
-  Plugin 'marijnh/tern_for_vim'
-  Plugin 'altercation/vim-colors-solarized'
-  Plugin 'digitaltoad/vim-jade'
-  Plugin 'scrooloose/nerdtree'
-  Plugin 'Xuyuanp/nerdtree-git-plugin'
-  Plugin 'bling/vim-airline'
-  Plugin 'wincent/command-t'
-  Plugin 'vim-scripts/argtextobj.vim' " Adds the ia and aa text objects (for arguments)
-  Plugin 'michaeljsmith/vim-indent-object' " Adds the ii and ai text objects (for indent levels)
-  Plugin 'christoomey/vim-tmux-navigator'
-  Plugin 'moll/vim-node'
-  Plugin 'Valloric/YouCompleteMe'
-  Plugin 'MarcWeber/vim-addon-mw-utils'
-  Plugin 'tomtom/tlib_vim'
-  Plugin 'garbas/vim-snipmate'
-  Plugin 'honza/vim-snippets'
-  Plugin 'tpope/vim-surround' " Adds s selector (i.e. cs'[ will change surrounding ' to [)
-  Plugin 'scrooloose/syntastic'
-  Plugin 'scrooloose/nerdcommenter' " Adds <LEADER>c ... commands to change comment state
-  Plugin 'xuhdev/vim-latex-live-preview' " adds :LLPStartPreview
-  Plugin 'lervag/vimtex' " Adds ie/ae environment, i$/a$, id/ad delim... And dsc/dse (surrounding command/environment) and csc/cse)
-  Plugin 'reedes/vim-pencil'
-  Plugin 'reedes/vim-lexical'
-  Plugin 'reedes/vim-litecorrect'
-  Plugin 'reedes/vim-textobj-quote'
-  Plugin 'reedes/vim-textobj-sentence'
-  Plugin 'kana/vim-textobj-user'
-  Plugin 'klen/python-mode'
-  Plugin 'sheerun/vim-polyglot'
-  Plugin 'deris/vim-shot-f'
-  Plugin 'junegunn/goyo.vim'
-  Plugin 'mitsuhiko/vim-jinja'
-  Plugin 'tpope/vim-repeat'
-
-  " All of your Plugins must be added before the following line
-  call vundle#end()            " required
-
-  filetype plugin indent on    " required
-
-
+set nocompatible
 let mapleader=" "
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
+
+" -------
+" PLUGINS
+" -------
+  call plug#begin('~/.vim/plugged')
+    Plug 'scrooloose/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+    Plug 'tpope/vim-fugitive'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+    Plug 'junegunn/fzf.vim'
+    Plug 'jacoborus/tender.vim'
+    Plug 'itchyny/lightline.vim'
+    Plug 'vim-scripts/argtextobj.vim' " Adds the ia and aa text objects
+    Plug 'michaeljsmith/vim-indent-object' " Adds the ii and ai text objects
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'tpope/vim-surround' " Adds s selector
+    Plug 'scrooloose/nerdcommenter' " Adds <LEADER>cc
+    Plug 'reedes/vim-lexical'
+    Plug 'reedes/vim-litecorrect'
+    Plug 'reedes/vim-textobj-sentence'
+    Plug 'sheerun/vim-polyglot'
+    Plug 'deris/vim-shot-f'
+    Plug 'tpope/vim-repeat'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'mengelbrecht/lightline-bufferline'
+    Plug 'vim-scripts/a.vim'
+
+    Plug 'klen/python-mode', { 'for': 'python', 'branch': 'develop' }
+    Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+    Plug 'luchermitte/vimfold4c', { 'for': 'cpp' }
+
+
+    if has('nvim')
+      Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+      Plug 'Shougo/deoplete.nvim'
+      Plug 'roxma/nvim-yarp'
+      Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+		Plug 'dense-analysis/ale'
+		Plug 'maximbaz/lightline-ale'
+  call plug#end()
+  " remember to run :PlugInstall!
+
+  let g:deoplete#enable_at_startup = 1
+
+  let g:ale_fix_on_save = 1
+	let g:ale_fixers = {
+	\'*': ['trim_whitespace'],
+	\'javascript': ['prettier', 'eslint'],
+	\'python': ['autopep8'],
+	\'cpp': ['clang-format'],
+	\}
+
+  let g:gitgutter_map_keys = 0
+
+  " coc.nvim configurations
+  set hidden
+  set cmdheight=2
+  set updatetime=300
+  set shortmess+=c
+  set signcolumn=yes
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+  endfunction
+  function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+    else
+      call CocAction('doHover')
+    endif
+  endfunction
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+
+
 " ------------
-" Basic config
+" BASIC CONFIG
 " ------------
   set nobackup
   set nowritebackup
@@ -83,27 +107,7 @@ set backspace=indent,eol,start
   " python/html tab stops
   au FileType python setl sw=4 ts=4
   au FileType html setl sw=4 ts=4
-  au FileType jade setl sw=4 ts=4
   au FileType md setl sw=4 ts=4
-
-  " airline
-  let g:airline_powerline_fonts = 1
-  let g:airline#extensions#tabline#enabled = 1
-
-  " Syntastic
-  set statusline+=%#warningmsg#
-  set statusline+=%{SyntasticStatuslineFlag()}
-  set statusline+=%*
-
-  let g:syntastic_always_populate_loc_list = 1
-  let g:syntastic_auto_loc_list = 1
-  let g:syntastic_check_on_open = 1
-  let g:syntastic_check_on_wq = 0
-
-  let g:syntastic_mode_map = { 'passive_filetypes': ['html'] }
-
-  let g:syntastic_ocaml_use_ocamlbuild = 1
-  let g:syntastic_ocaml_checkers = ['merlin']
 
   " Line length
   if exists('+colorcolumn')
@@ -112,23 +116,51 @@ set backspace=indent,eol,start
     au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
   endif
 
-" ----------
-" Appearance
-" ----------
-  if (!has("gui_running"))
-    let g:solarized_termtrans=1
-    let g:solarized_termcolors=256
-    hi Visual term=reverse cterm=reverse ctermfg=10 ctermbg=7
-  endif
 
+" ----------
+" APPEARANCE
+" ----------
   " Switch syntax highlighting on, when the terminal has colors
   " Also switch on highlighting the last used search pattern.
   if &t_Co > 2 || has("gui_running")
     syntax enable
     set hlsearch
     set background=dark
-    colorscheme solarized
+    colorscheme tender
   endif
+
+  if (has("termguicolors"))
+   set termguicolors
+  endif
+
+  hi Visual term=reverse cterm=reverse guibg=Grey
+
+  let g:lightline = { 'colorscheme': 'tender' }
+
+  set showtabline=2
+
+  let g:lightline.enable = {
+        \ 'statusline': 1,
+        \ 'tabline': 1
+        \ }
+
+  let g:lightline.tabline          = {'left': [['buffers']], 'right': [['close']]}
+
+  let g:lightline.component_expand = {
+        \  'linter_checking': 'lightline#ale#checking',
+        \  'linter_warnings': 'lightline#ale#warnings',
+        \  'linter_errors': 'lightline#ale#errors',
+        \  'linter_ok': 'lightline#ale#ok',
+        \ 'buffers': 'lightline#bufferline#buffers',
+        \ }
+  let g:lightline.component_type = {
+        \     'linter_checking': 'left',
+        \     'linter_warnings': 'warning',
+        \     'linter_errors': 'error',
+        \     'linter_ok': 'left',
+        \     'buffers': 'tabsel',
+        \ }
+  let g:lightline.active = { 'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]] }
 
   " Don't use Ex mode, use Q for formatting
   map Q gq
@@ -148,21 +180,42 @@ set backspace=indent,eol,start
   " so that you can undo CTRL-U after inserting a line break.
   inoremap <C-U> <C-G>u<C-U>
 
-  " Disable arrow keys
-  noremap <Up> <Nop>
-  noremap <Down> <Nop>
-  noremap <Left> <Nop>
-  noremap <Right> <Nop>
-
   " Switch off search highlight until next search (clear the highlight)
   nnoremap <silent> <Leader>/ :nohlsearch<CR>
+
+  " Switches between header and source files
+  nnoremap <Leader>s :A<CR>
+  nnoremap <Leader>S :AS<CR>
 
   " Splits
   nnoremap <Leader>" :sp<CR>
   nnoremap <Leader>% :vsp<CR>
 
+  " Autcomplete
+  inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ coc#refresh()
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+  " coc
+  inoremap <silent><expr> <c-space> coc#refresh()
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gy <Plug>(coc-type-definition)
+  nmap <silent> gi <Plug>(coc-implementation)
+  nmap <silent> gr <Plug>(coc-references)
+  nnoremap <silent> K :call <SID>show_documentation()<CR>
+	xmap <leader>f  <Plug>(coc-format-selected)
+	nmap <leader>f  <Plug>(coc-format-selected)
+	nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+
   " NERDTree
   map <Leader>f :NERDTreeToggle<CR>
+
+	" FZF
+	map <Leader>t :FZF<CR>
+  map <c-p> :FZF<CR>
 
   " Window switching
   nnoremap <Leader>w <C-W><C-W>
@@ -173,13 +226,13 @@ set backspace=indent,eol,start
 
   " Buffers
   " Open new buffer
-  nmap <leader>j :enew<cr>
+  nmap <Leader>j :enew<cr>
   " Move to the next buffer
-  nmap <leader>l :bnext<CR>
+  nmap <Leader>l :bnext<CR>
   " Move to the previous buffer
-  nmap <leader>h :bprevious<CR>
+  nmap <Leader>h :bprevious<CR>
   " Close the current buffer and move to the previous one
-  nmap <leader>k :bp <BAR> bd #<CR>
+  nmap <Leader>k :bp <BAR> bd #<CR>
 
   " System buffer paste
   vmap <Leader>y "+y
@@ -194,97 +247,59 @@ set backspace=indent,eol,start
   vnoremap <silent> p p`]
   nnoremap <silent> p p`]
 
-  " Visual line mode w/ SPACE SPACE
-  nnoremap <Leader><Leader> V
-
-  " Snip mate
-  imap <C-J> <esc>a<Plug>snipMateNextOrTrigger
-  smap <C-J> <Plug>snipMateNextOrTrigger
-
   " Close tag by typing <//
   iabbrev <// </<C-X><C-O>
 
-  " escape with jk
-  inoremap jk <Esc>  
+  " Escape with jk
+  inoremap jk <Esc>
 
+	nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+	nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
-  " Tex live preview
-  let g:livepreview_previewer = 'open -a Preview'
-  " LaTeX preview
-  nnoremap <Leader>T :LLPStartPreview<CR>
-  nnoremap <Leader>L :LLPStartPreview<CR>
+  " Replace #include with bazel build path
+  nnoremap <Leader>b :s/\#include "\(.*\)\/\(.*\).h"/"\/\/\1:\2",/g<CR>
 
-  " Ocaml
-  " Use merlin
-  function SetupMerlin()
-    let s:ocamlmerlin = substitute(system('opam config var share'), '\n$', '', '''') . "/merlin"
-    execute "set rtp+=".s:ocamlmerlin."/vim"
-    execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
-
-    let g:syntastic_ocaml_checkers = ['merlin']
-    set omnifunc=syntaxcomplete#Complete
-
-    nnoremap <leader>d :MerlinLocate<CR>
-    nnoremap <leader>i :MerlinTypeOf<CR>
-    nnoremap <leader>I :MerlinGrowEnclosing<CR>
-    nnoremap <leader>u :MerlinShrinkEnclosing<CR>
-    nnoremap <leader>? :MerlinClearEnclosing<CR>
-  endfunction
-
-  call SetupMerlin()
+  " Git tools
+  nnoremap gz :GitGutterFold<CR>
+  nnoremap gh :GitGutterLineHighlightsToggle<CR>
+  nnoremap gd :Gdiff<CR>
 
   " cpp
-  map <C-K> :pyf <path-to-this-file>/clang-format.py<cr>
-  imap <C-K> <c-o>:pyf <path-to-this-file>/clang-format.py<cr>
   set cinkeys-=0#
   set cinoptions+=(0,W1s
   set indentkeys-=0#
-  
+
 
 " --------
 " AUTOCMDS
 " --------
   " Only do this part when compiled with support for autocommands.
   if has("autocmd")
-    autocmd FileType ocaml execute "source /Users/hunter/.opam/4.04.0/share/ocp-indent/vim/indent/ocaml.vim"
-
-    " Configure stylus styling
-    autocmd BufNewFile,BufReadPost *.styl set filetype=stylus
-
     " Configure NERDTree
     autocmd StdinReadPre * let s:std_in=1 " Open NERDTree if vim started w/ no target file
     autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " Close vim if only NERDTree is left
 
-    " Enable file type detection.
-    " Use the default filetype settings, so that mail gets 'tw' set to 72,
-    " 'cindent' is on in C files, etc.
-    " Also load indent files, to automatically do language-dependent indenting.
-    filetype plugin indent on
-
     " Put these in an autocmd group, so that we can delete them easily.
     augroup vimrc_ex
-    au!
+      au!
 
-    " For all text files set 'textwidth' to 78 characters.
-    autocmd FileType text setlocal textwidth=78
+      " For all text files set 'textwidth' to 80 characters.
+      autocmd FileType text setlocal textwidth=80
 
-    " When editing a file, always jump to the last known cursor position.
-    " Don't do it when the position is invalid or when inside an event handler
-    " (happens when dropping a file on gvim).
-    " Also don't do it when the mark is in the first line, that is the default
-    " position when opening a file.
-    autocmd BufReadPost *
-      \ if line("'\"") > 1 && line("'\"") <= line("$") |
-      \   exe "normal! g`\"" |
-      \ endif
-
+      " When editing a file, always jump to the last known cursor position.
+      " Don't do it when the position is invalid or when inside an event handler
+      " (happens when dropping a file on gvim).
+      " Also don't do it when the mark is in the first line, that is the default
+      " position when opening a file.
+      autocmd BufReadPost *
+        \ if line("'\"") > 1 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ endif
     augroup END
 
   else
-
     set autoindent		" always set autoindenting on
-
   endif " has("autocmd")
 
   " Convenient command to see the difference between the current buffer and the
@@ -295,26 +310,3 @@ set backspace=indent,eol,start
         \ | wincmd p | diffthis
   endif
 
-  " Configure pencil
-  augroup pencil
-    autocmd!
-    autocmd FileType markdown,mkd call lexical#init()
-                              \ | call litecorrect#init()
-                              \ | call textobj#sentence#init()
-
-    autocmd FileType text,txt     call pencil#init({'wrap': 'soft'})        
-                              \ | call lexical#init()
-                              \ | call litecorrect#init()
-                              \ | call textobj#sentence#init()
-                              \ | :PencilOff
-
-    autocmd FileType textile      call lexical#init()
-                              \ | call litecorrect#init()
-                              \ | call textobj#sentence#init()
-  augroup END
-
-" Auto-reloads vimrc
-augroup reload_vimrc
-  autocmd!
-  autocmd BufWritePost $MYVIMRC source $MYVIMRC
-augroup END
