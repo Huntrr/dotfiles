@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/hlightman/.oh-my-zsh
+export ZSH=~/.oh-my-zsh
 ZSH_THEME="arrow"
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=240"

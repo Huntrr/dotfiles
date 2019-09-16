@@ -60,7 +60,10 @@ install_oh_my_zsh () {
 install_neovim () {
   echo "Neovim installation"
   if [[ $platform == 'Linux' ]]; then
-    sudo apt-get install neovim python-neovim python3-neovim
+    sudo add-apt-repository ppa:neovim-ppa/stable
+    sudo apt-get update
+    sudo apt-get install neovim
+    sudo apt-get install python-dev python-pip python3-dev python3-pip
   elif [[ $platform == 'Darwin' ]]; then
     brew install neovim
   fi
