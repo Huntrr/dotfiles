@@ -1,4 +1,11 @@
 {
+  "coc": {
+    "preferences": {
+      "diagnostic": {
+        "displayByAle": true
+      }
+    }
+  },
   "languageserver": {
     "ccls": {
       "command": "ccls",

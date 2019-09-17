@@ -1,6 +1,7 @@
 " Hunter Lightman's vimrc
 set nocompatible
 let mapleader=" "
+set mouse=a
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -32,18 +33,9 @@ set backspace=indent,eol,start
     Plug 'mengelbrecht/lightline-bufferline'
     Plug 'vim-scripts/a.vim'
 
-    Plug 'klen/python-mode', { 'for': 'python', 'branch': 'develop' }
+    Plug 'davidhalter/jedi-vim'
     Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
     Plug 'luchermitte/vimfold4c', { 'for': 'cpp' }
-
-
-    if has('nvim')
-      Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-      Plug 'Shougo/deoplete.nvim'
-      Plug 'roxma/nvim-yarp'
-      Plug 'roxma/vim-hug-neovim-rpc'
-    endif
 
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -52,17 +44,15 @@ set backspace=indent,eol,start
   call plug#end()
   " remember to run :PlugInstall!
 
-  let g:deoplete#enable_at_startup = 1
-
-  let g:ale_fix_on_save = 1
-	let g:ale_fixers = {
-	\'*': ['trim_whitespace'],
-	\'javascript': ['prettier', 'eslint'],
-	\'python': ['autopep8'],
-	\'cpp': ['clang-format'],
-	\}
+  let g:ale_linters = {
+        \'c': ['clang-format', 'clang'],
+        \'cpp': ['clang-format', 'clang'],
+        \'javascript': ['standard', 'eslint'],
+        \'python': ['mypy', 'flake8'],
+        \}
 
   let g:gitgutter_map_keys = 0
+  let g:gitgutter_realtime = 1
 
   " coc.nvim configurations
   set hidden
@@ -87,6 +77,8 @@ set backspace=indent,eol,start
 " ------------
 " BASIC CONFIG
 " ------------
+  filetype plugin on
+  filetype indent on
   set nobackup
   set nowritebackup
   set history=50		" keep 50 lines of command line history
@@ -97,6 +89,10 @@ set backspace=indent,eol,start
   set tabstop=2
   set shiftwidth=2
   set expandtab
+  set autoindent
+  set smartindent
+  set cindent
+  set autoread
   set showbreak=▸
   set laststatus=2 " show statusline always
   set cursorline
@@ -133,6 +129,7 @@ set backspace=indent,eol,start
    set termguicolors
   endif
 
+  hi VertSplit guifg=Grey
   hi Visual term=reverse cterm=reverse guibg=Grey
 
   let g:lightline = { 'colorscheme': 'tender' }
@@ -216,6 +213,7 @@ set backspace=indent,eol,start
 	" FZF
 	map <Leader>t :FZF<CR>
   map <c-p> :FZF<CR>
+  map <c-o> :Buffers<CR>
 
   " Window switching
   nnoremap <Leader>w <C-W><C-W>
@@ -223,6 +221,12 @@ set backspace=indent,eol,start
   nnoremap <c-k> <c-w>k
   nnoremap <c-h> <c-w>h
   nnoremap <c-l> <c-w>l
+
+  " Window resizing
+  nnoremap <Leader>H :vertical resize -8<CR>
+  nnoremap <Leader>L :vertical resize +8<CR>
+  nnoremap <Leader>J :resize +4<CR>
+  nnoremap <Leader>K :resize -4<CR>
 
   " Buffers
   " Open new buffer
@@ -253,8 +257,7 @@ set backspace=indent,eol,start
   " Escape with jk
   inoremap jk <Esc>
 
-	nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-	nmap <silent> <C-j> <Plug>(ale_next_wrap)
+  inoremap <silent><expr> <CR> pumvisible() ? "\<C-y><CR>" : "\<CR>"
 
   " Replace #include with bazel build path
   nnoremap <Leader>b :s/\#include "\(.*\)\/\(.*\).h"/"\/\/\1:\2",/g<CR>
@@ -262,7 +265,7 @@ set backspace=indent,eol,start
   " Git tools
   nnoremap gz :GitGutterFold<CR>
   nnoremap gh :GitGutterLineHighlightsToggle<CR>
-  nnoremap gd :Gdiff<CR>
+  nnoremap gD :Gdiff<CR>
 
   " cpp
   set cinkeys-=0#
@@ -279,6 +282,12 @@ set backspace=indent,eol,start
     autocmd StdinReadPre * let s:std_in=1 " Open NERDTree if vim started w/ no target file
     autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " Close vim if only NERDTree is left
+
+    augroup DisableMappings
+      autocmd VimEnter * :iunmap <Leader>ih
+      autocmd VimEnter * :iunmap <Leader>ihn
+      autocmd VimEnter * :iunmap <Leader>is
+    augroup END
 
     " Put these in an autocmd group, so that we can delete them easily.
     augroup vimrc_ex
@@ -299,7 +308,6 @@ set backspace=indent,eol,start
     augroup END
 
   else
-    set autoindent		" always set autoindenting on
   endif " has("autocmd")
 
   " Convenient command to see the difference between the current buffer and the
