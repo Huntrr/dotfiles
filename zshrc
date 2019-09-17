@@ -29,4 +29,10 @@ bindkey '^[[B' history-substring-search-down
 alias balias='vim ~/.zshrc && source ~/.zshrc'
 alias vim=nvim
 
+# git
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit -m"
+alias gp="git push"
+
 source ~/.private_zshrc
