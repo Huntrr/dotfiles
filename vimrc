@@ -71,7 +71,6 @@ set backspace=indent,eol,start
       call CocAction('doHover')
     endif
   endfunction
-  autocmd CursorHold * silent call CocActionAsync('highlight')
 
 
 " ------------
@@ -184,6 +183,13 @@ set backspace=indent,eol,start
   nnoremap <Leader>s :A<CR>
   nnoremap <Leader>S :AS<CR>
 
+  " nvim terminal
+  if has("nvim")
+    :nnoremap <C-t> :terminal<CR>
+    :tnoremap <C-n> <C-\><C-n>
+    :set shell=zsh
+  endif
+
   " Splits
   nnoremap <Leader>" :sp<CR>
   nnoremap <Leader>% :vsp<CR>
@@ -209,6 +215,7 @@ set backspace=indent,eol,start
 
   " NERDTree
   map <Leader>f :NERDTreeToggle<CR>
+  map <Leader>n :NERDTreeFind<CR>
 
 	" FZF
 	map <Leader>t :FZF<CR>
@@ -266,6 +273,7 @@ set backspace=indent,eol,start
   nnoremap gz :GitGutterFold<CR>
   nnoremap gh :GitGutterLineHighlightsToggle<CR>
   nnoremap gD :Gdiff<CR>
+  nnoremap gs :Gstatus<CR>
 
   " cpp
   set cinkeys-=0#
@@ -278,10 +286,17 @@ set backspace=indent,eol,start
 " --------
   " Only do this part when compiled with support for autocommands.
   if has("autocmd")
+    " Coc
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+
     " Configure NERDTree
-    autocmd StdinReadPre * let s:std_in=1 " Open NERDTree if vim started w/ no target file
-    autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " Close vim if only NERDTree is left
+    augroup NERDTree
+      au!
+
+      autocmd StdinReadPre * let s:std_in=1 " Open NERDTree if vim started w/ no target file
+      autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+      autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " Close vim if only NERDTree is left
+    augroup END
 
     augroup DisableMappings
       autocmd VimEnter * :iunmap <Leader>ih
