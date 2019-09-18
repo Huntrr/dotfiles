@@ -55,6 +55,7 @@ let g:gitgutter_map_keys = 0
 let g:gitgutter_realtime = 1
 
 " coc.nvim configurations
+set statusline^=%{coc#status()}
 set hidden
 set cmdheight=2
 set updatetime=300
@@ -131,32 +132,55 @@ endif
 hi VertSplit guifg=Grey
 hi Visual term=reverse cterm=reverse guibg=Grey
 
-let g:lightline = { 'colorscheme': 'tender' }
-
 set showtabline=2
 
-let g:lightline.enable = {
-      \ 'statusline': 1,
-      \ 'tabline': 1
-      \ }
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
 
-let g:lightline.tabline          = {'left': [['buffers']], 'right': [['close']]}
+function! CocStatus()
+    return get(g:, 'coc_status', '')
+endfunction
 
-let g:lightline.component_expand = {
-      \ 'linter_checking': 'lightline#ale#checking',
-      \ 'linter_warnings': 'lightline#ale#warnings',
-      \ 'linter_errors': 'lightline#ale#errors',
-      \ 'linter_ok': 'lightline#ale#ok',
-      \ 'buffers': 'lightline#bufferline#buffers',
+let g:lightline = { 
+      \ 'colorscheme': 'tender',
+      \ 'enable': {
+      \   'statusline': 1,
+      \   'tabline': 1,
+      \ },
+      \ 'tabline': {
+      \   'left': [ ['buffers'] ],
+      \   'right': [ ['close'] ],
+      \ },
+      \ 'component_expand': {
+      \   'linter_checking': 'lightline#ale#checking',
+      \   'linter_warnings': 'lightline#ale#warnings',
+      \   'linter_errors': 'lightline#ale#errors',
+      \   'linter_ok': 'lightline#ale#ok',
+      \   'buffers': 'lightline#bufferline#buffers',
+      \   'cocstatus': 'coc#status',
+      \ },
+      \ 'component_function': {
+      \   'currentfunction': 'CocCurrentFunction',
+      \ },
+      \ 'component_type': {
+      \   'linter_checking': 'left',
+      \   'linter_warnings': 'warning',
+      \   'linter_errors': 'error',
+      \   'linter_ok': 'left',
+      \   'buffers': 'tabsel',
+      \ },
+      \ 'active': {
+      \   'left': [
+      \     [ 'mode', 'paste' ],
+      \     [ 'readonly', 'filename', 'modified' ],
+      \     [ 'cocstatus', 'currentfunction' ],
+      \   ],
+      \   'right': [
+      \     [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+      \   ],
+      \ },
       \ }
-let g:lightline.component_type = {
-      \ 'linter_checking': 'left',
-      \ 'linter_warnings': 'warning',
-      \ 'linter_errors': 'error',
-      \ 'linter_ok': 'left',
-      \ 'buffers': 'tabsel',
-      \ }
-let g:lightline.active = { 'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]] }
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
