@@ -32,6 +32,7 @@ Plug 'tpope/vim-repeat'
 Plug 'airblade/vim-gitgutter'
 Plug 'mengelbrecht/lightline-bufferline'
 Plug 'vim-scripts/a.vim'
+Plug 'LucHermitte/lh-vim-lib'
 
 Plug 'davidhalter/jedi-vim'
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
@@ -60,7 +61,9 @@ set hidden
 set cmdheight=2
 set updatetime=300
 set shortmess+=c
-set signcolumn=yes
+if has("nvim")
+  set signcolumn=yes
+endif
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -209,7 +212,7 @@ nnoremap <Leader>S :AS<CR>
 
 " nvim terminal
 if has("nvim")
-  :nnoremap <C-t> :terminal<CR>
+  :nnoremap <C-t> :split<CR>:resize 20<CR>:terminal<CR>
   :tnoremap <C-n> <C-\><C-n>
   :set shell=zsh
 endif
@@ -218,6 +221,9 @@ endif
 nnoremap <Leader>" :sp<CR>
 nnoremap <Leader>% :vsp<CR>
 
+" Ctags
+nmap <C-c> <C-t>Actags -R .<CR>
+
 " Autcomplete
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
@@ -225,21 +231,28 @@ inoremap <silent><expr> <TAB>
       \ coc#refresh()
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
+function! s:goto_definition()
+  if CocAction('jumpDefinition')
+    return v:true
+  endif
+  execute "normal \<C-]>"
+endfunction
+
 " coc
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gd :call <SID>goto_definition()<CR>
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+xmap <Leader>f  <Plug>(coc-format-selected)
+nmap <Leader>f  <Plug>(coc-format-selected)
 nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 
 " NERDTree
 map <Leader>f :NERDTreeToggle<CR>
-map <Leader>n :NERDTreeFind<CR>
+map <Leader>m :NERDTreeFind<CR>
 
 " FZF
 map <Leader>t :FZF<CR>

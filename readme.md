@@ -9,3 +9,8 @@ just be ugly...) and run
 ```
 
 Afterwards, to get intellisense, you just need to setup and install ccls.
+
+# TODO
+1. Add ctags installation
+2. Add autoformat
+3. ALE next/prev map
