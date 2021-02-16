@@ -38,7 +38,7 @@ Plug 'davidhalter/jedi-vim'
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'luchermitte/vimfold4c', { 'for': 'cpp' }
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'dense-analysis/ale'
 Plug 'maximbaz/lightline-ale'
@@ -55,27 +55,31 @@ let g:ale_linters = {
 let g:gitgutter_map_keys = 0
 let g:gitgutter_realtime = 1
 
-" coc.nvim configurations
-set statusline^=%{coc#status()}
-set hidden
-set cmdheight=2
-set updatetime=300
-set shortmess+=c
-if has("nvim")
-  set signcolumn=yes
-endif
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+" disable some Jedi maps
+let g:jedi#rename_command = ""
 
+set timeoutlen=1000 ttimeoutlen=0
+
+" coc.nvim configurations
+"set statusline^=%{coc#status()}
+"set hidden
+"set cmdheight=2
+"set updatetime=300
+"set shortmess+=c
+"if has("nvim")
+  "set signcolumn=yes
+"endif
+"function! s:check_back_space() abort
+  "let col = col('.') - 1
+  "return !col || getline('.')[col - 1]  =~# '\s'
+"endfunction
+"function! s:show_documentation()
+  "if (index(['vim','help'], &filetype) >= 0)
+    "execute 'h '.expand('<cword>')
+  "else
+    "call CocAction('doHover')
+  "endif
+"endfunction
 
 " ------------
 " BASIC CONFIG
@@ -137,13 +141,13 @@ hi Visual term=reverse cterm=reverse guibg=Grey
 
 set showtabline=2
 
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
+"function! CocCurrentFunction()
+    "return get(b:, 'coc_current_function', '')
+"endfunction
 
-function! CocStatus()
-    return get(g:, 'coc_status', '')
-endfunction
+"function! CocStatus()
+    "return get(g:, 'coc_status', '')
+"endfunction
 
 let g:lightline = { 
       \ 'colorscheme': 'tender',
@@ -161,10 +165,6 @@ let g:lightline = {
       \   'linter_errors': 'lightline#ale#errors',
       \   'linter_ok': 'lightline#ale#ok',
       \   'buffers': 'lightline#bufferline#buffers',
-      \   'cocstatus': 'coc#status',
-      \ },
-      \ 'component_function': {
-      \   'currentfunction': 'CocCurrentFunction',
       \ },
       \ 'component_type': {
       \   'linter_checking': 'left',
@@ -222,41 +222,54 @@ nnoremap <Leader>" :sp<CR>
 nnoremap <Leader>% :vsp<CR>
 
 " Ctags
-nmap <C-c> <C-t>Actags -R .<CR>
+nmap <C-c> <C-t>Actags -R --fields=+S --exclude="bazel-*" --exclude=".git"<CR>
 
 " Autcomplete
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ coc#refresh()
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 function! s:goto_definition()
-  if CocAction('jumpDefinition')
-    return v:true
-  endif
+  "if CocAction('jumpDefinition')
+    "return v:true
+  "endif
   execute "normal \<C-]>"
 endfunction
 
 " coc
-inoremap <silent><expr> <c-space> coc#refresh()
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-nmap <silent> gd :call <SID>goto_definition()<CR>
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-xmap <Leader>f  <Plug>(coc-format-selected)
-nmap <Leader>f  <Plug>(coc-format-selected)
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+"inoremap <silent><expr> <c-space> coc#refresh()
+"inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+"nmap <silent> gd :call <SID>goto_definition()<CR>
+"nmap <silent> gy <Plug>(coc-type-definition)
+"nmap <silent> gi <Plug>(coc-implementation)
+"nmap <silent> gr <Plug>(coc-references)
+"nnoremap <silent> K :call <SID>show_documentation()<CR>
+"xmap <Leader>f  <Plug>(coc-format-selected)
+"nmap <Leader>f  <Plug>(coc-format-selected)
+"nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 
 " NERDTree
 map <Leader>f :NERDTreeToggle<CR>
 map <Leader>m :NERDTreeFind<CR>
 
 " FZF
-map <Leader>t :FZF<CR>
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+map <Leader>t :GFiles<CR>
 map <c-p> :FZF<CR>
+map <Leader>r :RG<CR>
+map <Leader>e :Lines<CR>
+map <Leader>y :Tags<CR>
 map <c-o> :Buffers<CR>
 
 " Window switching
@@ -281,14 +294,6 @@ nmap <Leader>l :bnext<CR>
 nmap <Leader>h :bprevious<CR>
 " Close the current buffer and move to the previous one
 nmap <Leader>k :bp <BAR> bd #<CR>
-
-" System buffer paste
-vmap <Leader>y "+y
-vmap <Leader>d "+d
-nmap <Leader>p "+p
-nmap <Leader>P "+P
-vmap <Leader>p "+p
-vmap <Leader>P "+P
 
 " Jump to end of pastes
 vnoremap <silent> y y`]
@@ -324,7 +329,7 @@ set indentkeys-=0#
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
   " Coc
-  autocmd CursorHold * silent call CocActionAsync('highlight')
+  "autocmd CursorHold * silent call CocActionAsync('highlight')
 
   " Configure NERDTree
   augroup NERDTree
