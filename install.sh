@@ -46,7 +46,7 @@ install_zsh () {
       sudo apt-get install git curl
       sudo apt-get install zsh autojump
     elif [[ $platform == 'Darwin' ]]; then
-      brew install zsh autojump
+      brew install zsh autojump ripgrep
     fi
   else
     echo "... skipping"
