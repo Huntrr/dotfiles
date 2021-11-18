@@ -6,6 +6,8 @@ set mouse=a
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
+" always copy to system clipboard
+set clipboard=unnamedplus
 
 " -------
 " PLUGINS
