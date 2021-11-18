@@ -11,7 +11,7 @@ COMPLETION_WAITING_DOTS="true"
 # much, much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-plugins=(git osx brew vi-mode web-search zsh-autosuggestions autojump history-substring-search)
+plugins=(git macos brew vi-mode web-search zsh-autosuggestions autojump history-substring-search)
 
 # User configuration
 export PATH="$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"

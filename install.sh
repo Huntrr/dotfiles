@@ -6,13 +6,15 @@
 # 2) installs zsh                             #
 ###############################################
 
+set -e
+
 # Variables
 dir="$(dirname $0)"
 olddir=~/dotfiles_old
 platform=$(uname);
 
 # Script
-brew_url=https://raw.githubusercontent.com/Homebrew/install/master/install
+brew_url=https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
 install_packagemanager () {
   echo "Updating package manager"
   if [[ $platform == 'Linux' ]]; then
@@ -21,7 +23,7 @@ install_packagemanager () {
     which -s brew
     if [[ $? != 0 ]]; then
         echo "Homebrew installation"
-        /usr/bin/ruby -e "$(curl -fsSL $brew_url)"
+        /bin/bash -c "$(curl -fsSL $brew_url)"
     else
         brew update
     fi
@@ -55,6 +57,7 @@ zsh_url=https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/in
 install_oh_my_zsh () {
   echo "Oh My Zsh installation"
   sh -c "$(curl -fsSL $zsh_url)"
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 }
 
 install_neovim () {
